@@ -10,7 +10,9 @@ class blockController : public Process, public AgentInterface {
     public:
     blockController() : Process(), AgentInterface() {}
 
-    void init() {}
+    void init() {
+        
+    }
     void start() {}
     void update() {}
     void stop() {}
