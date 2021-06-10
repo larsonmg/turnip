@@ -30,7 +30,6 @@ class MovingForward : public State, public AgentInterface {
 class RotatingRight : public State, public AgentInterface {
     void entry(const Event& e) {
         std::cout << "Right" << "\n";
-        cycles = 0;
     }
     void during() {
         // Check if the wall is sufficiently close
@@ -43,17 +42,14 @@ class RotatingRight : public State, public AgentInterface {
         }
         
         track_velocity(1,2);
-        cycles++;
     }
     void exit(const Event& e) {}
-    int cycles;
 };
 
 // The below class dictates the behavior of the wall following bot in its "Left rotation" state
 class RotatingLeft : public State, public AgentInterface {
     void entry(const Event& e) {
         std::cout << "Left" << "\n";
-        cycles = 0;
     }
     void during() {
         // Check if the bot is sufficiently far from the wall to the right and in front
@@ -65,16 +61,15 @@ class RotatingLeft : public State, public AgentInterface {
                 emit(Event("right"));
         }
         track_velocity(1,-3);
-        cycles++;
     }
     void exit(const Event& e) {}
-    int cycles;
 };
 class WandererController : public StateMachine, public AgentInterface {
 
     public:
         WandererController() : StateMachine() {
             set_initial(moving_forward);
+            // Set all state transitions
             add_transition("right", moving_forward, right);
             add_transition("left", moving_forward, left);
             add_transition("tick", left, moving_forward);
@@ -84,6 +79,7 @@ class WandererController : public StateMachine, public AgentInterface {
         }
         
         void update() {
+            // Say "you win!" and reset the robot when it completes the maze
             if(position().x > 160 and position().y < -160) {
                 std::cout << "You win!" << "\n";
                 teleport(-180,180,-1.6);
